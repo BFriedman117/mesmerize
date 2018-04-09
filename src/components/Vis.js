@@ -32,23 +32,25 @@ class Test extends Component {
     let fbc = new Uint8Array(analyser.frequencyBinCount)
 
     let x = canvas.width / 2
-    let y = canvas.height / 2
+    let y = canvas.height / 2 + 30
     let angle
-
+    let peak = false
 
     function animate(){
       requestAnimationFrame(animate);
       c.clearRect(0, 0, window.innerWidth, window.innerHeight)
       analyser.getByteFrequencyData(fbc)
-      for (let i = 0; i < fbc.length; i++){
+      for (let i = 5; i < fbc.length; i++){
+        peak = (fbc[i] > 75)
+
         angle = (i / (fbc.length / 2)) * Math.PI
         let bar_x = x + Math.cos(angle) * fbc.length
-        let bar_y = y + Math.sin(angle) * fbc.length
         let width = canvas.width / fbc.length
         let height = -(fbc[i])
-        c.fillStyle = "blue"
-        c.shadowBlur = 8
-        c.shadowColor = "lightblue"
+        let bar_y = y + Math.sin(angle) * fbc.length
+        c.fillStyle = peak ? "white" : "blue"
+        c.shadowBlur = peak ? 50 : 15
+        c.shadowColor = peak ? "white" : "#05f2ff"
         c.fillRect(bar_x, bar_y, 3, height)
       }
 
