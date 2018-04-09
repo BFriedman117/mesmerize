@@ -31,21 +31,26 @@ class Test extends Component {
 
     let fbc = new Uint8Array(analyser.frequencyBinCount)
 
+    let x = canvas.width / 2
+    let y = canvas.height / 2
+
 
     function animate(){
       requestAnimationFrame(animate);
       c.clearRect(0, 0, window.innerWidth, window.innerHeight)
       analyser.getByteFrequencyData(fbc)
 
+      let radians = 200
       for (let i = 0; i < fbc.length; i++){
-        let x = (canvas.width / fbc.length) * i
-        let y = canvas.height
+        radians++
+        let bar_x = x + Math.cos(radians) * fbc.length
+        let bar_y = y + Math.sin(radians) * fbc.length
         let width = canvas.width / fbc.length
-        let height = -(fbc[i] * 4)
+        let height = -(fbc[i])
         c.fillStyle = "blue"
         c.shadowBlur = 5
         c.shadowColor = "white"
-        c.fillRect(x, y, width, height)
+        c.fillRect(bar_x, bar_y, width, height)
       }
 
     }
