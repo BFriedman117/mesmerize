@@ -33,24 +33,23 @@ class Test extends Component {
 
     let x = canvas.width / 2
     let y = canvas.height / 2
+    let angle
 
 
     function animate(){
       requestAnimationFrame(animate);
       c.clearRect(0, 0, window.innerWidth, window.innerHeight)
       analyser.getByteFrequencyData(fbc)
-
-      let radians = 200
       for (let i = 0; i < fbc.length; i++){
-        radians++
-        let bar_x = x + Math.cos(radians) * fbc.length
-        let bar_y = y + Math.sin(radians) * fbc.length
+        angle = (i / (fbc.length / 2)) * Math.PI
+        let bar_x = x + Math.cos(angle) * fbc.length
+        let bar_y = y + Math.sin(angle) * fbc.length
         let width = canvas.width / fbc.length
         let height = -(fbc[i])
         c.fillStyle = "blue"
-        c.shadowBlur = 5
-        c.shadowColor = "white"
-        c.fillRect(bar_x, bar_y, width, height)
+        c.shadowBlur = 8
+        c.shadowColor = "lightblue"
+        c.fillRect(bar_x, bar_y, 3, height)
       }
 
     }
