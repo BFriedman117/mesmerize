@@ -15,7 +15,7 @@ class Audio extends Component {
     audio.src = mp3
     audio.crossOrigin = 'anonymous'
     audio.autoplay = true
-    audio.muted = true
+    // audio.muted = true
   }
 
   render(){
