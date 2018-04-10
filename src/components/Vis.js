@@ -18,9 +18,6 @@ class Test extends Component {
       canvas.height = window.innerHeight;
     })
 
-    // // c.fillRect(0, 0, canvas.width, canvas.height)
-    // c.fillStyle = "black"
-    // c.fill()
 
     let a = new AudioContext()
     let analyser = a.createAnalyser()
@@ -30,7 +27,6 @@ class Test extends Component {
     analyser.fftSize = 512 / 2
     analyser.minDecibels = -90
     analyser.maxDecibels = -1
-    // analyser.smoothingTimeConstant = .5;
 
     let fbc = new Uint8Array(analyser.frequencyBinCount)
 
@@ -38,8 +34,9 @@ class Test extends Component {
     let y = canvas.height / 2 + 30
     let angle
     let peak = false
-    let radius = 250
-    let bar_x, bar_y, width, height
+    let radius = 100
+    let line_height = 70
+    let inner_x, inner_y, outer_x, outer_y, width, height
 
 
     function animate(){
@@ -47,20 +44,27 @@ class Test extends Component {
       c.clearRect(0, 0, window.innerWidth, window.innerHeight)
       analyser.getByteFrequencyData(fbc)
 
-      for (let i = 5; i < fbc.length; i++){
+      for (let i = 4; i < fbc.length; i++){
         peak = (fbc[i] > 75)
         angle = (i / (fbc.length / 2)) * Math.PI
 
-        bar_x = x + Math.cos(angle) * radius
-        bar_y = y + Math.sin(angle) * radius
+        inner_x = x + Math.cos(angle) * radius
+        inner_y = y + Math.sin(angle) * radius
+        outer_x = x + Math.cos(angle) * (radius + line_height + fbc[i])
+        outer_y = y + Math.sin(angle) * (radius + line_height + fbc[i])
         width = canvas.width / fbc.length
         height = -(fbc[i])
 
-        c.fillStyle = peak ? "white" : "#5bcbff"
+        c.strokeStyle = peak ? "white" : "#5bcbff"
         c.shadowBlur = peak ? 50 : 15
         c.shadowColor = peak ? "white" : "#05f2ff"
+        c.lineWidth = peak ? 15 : 3
 
-        c.fillRect(bar_x, bar_y, 3, height)
+        c.beginPath()
+        c.moveTo(inner_x, inner_y)
+        c.lineTo(outer_x, outer_y)
+        c.stroke()
+        // c.fillRect(bar_x, bar_y, 3, height)
       }
 
     }
