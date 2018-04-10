@@ -36,35 +36,59 @@ class Test extends Component {
     let peak = false
     let radius = 100
     let line_height = 70
-    let inner_x, inner_y, outer_x, outer_y, width, height
+    let line_width = 2
+    let inner_x, inner_y, outer_x, outer_y, width, height, grd
 
+    let average = arr => arr.reduce( ( p, c ) => p + c, 0 ) / arr.length
 
     function animate(){
       requestAnimationFrame(animate);
       c.clearRect(0, 0, window.innerWidth, window.innerHeight)
       analyser.getByteFrequencyData(fbc)
 
-      for (let i = 4; i < fbc.length; i++){
+      let avg = average(fbc) / 5
+
+      grd = c.createRadialGradient(x, y, avg / 2, x, y, 500 + (avg * 2))
+      grd.addColorStop(0,"white");
+      grd.addColorStop(0.2,"#70767f");
+      grd.addColorStop(1,"#313438");
+
+      c.fillStyle = grd
+      c.fillRect(0, 0, canvas.width, canvas.height)
+
+      for (let i = 0; i < fbc.length; i++){
+        inner_x = x + Math.cos(angle) * radius
+        inner_y = y + Math.sin(angle) * radius
         peak = (fbc[i] > 75)
         angle = (i / (fbc.length / 2)) * Math.PI
 
-        inner_x = x + Math.cos(angle) * radius
-        inner_y = y + Math.sin(angle) * radius
         outer_x = x + Math.cos(angle) * (radius + line_height + fbc[i])
         outer_y = y + Math.sin(angle) * (radius + line_height + fbc[i])
-        width = canvas.width / fbc.length
-        height = -(fbc[i])
 
         c.strokeStyle = peak ? "white" : "#5bcbff"
         c.shadowBlur = peak ? 50 : 15
         c.shadowColor = peak ? "white" : "#05f2ff"
-        c.lineWidth = peak ? 15 : 3
+        c.lineWidth = peak ? line_width * 5 : line_width
 
         c.beginPath()
         c.moveTo(inner_x, inner_y)
         c.lineTo(outer_x, outer_y)
         c.stroke()
-        // c.fillRect(bar_x, bar_y, 3, height)
+      }
+
+      c.beginPath()
+
+      for (let i = 0; i < fbc.length; i++){
+        angle = (i / (fbc.length / 2)) * Math.PI
+
+        outer_x = x + Math.cos(angle) * (radius + line_height + 15 + fbc[i])
+        outer_y = y + Math.sin(angle) * (radius + line_height + 15 + fbc[i])
+
+        c.lineTo(outer_x, outer_y)
+        c.shadowBlur = 0
+        c.strokeStyle = "#e3e4e5"
+        c.lineWidth = 1
+        c.stroke()
       }
 
     }
